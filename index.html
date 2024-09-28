@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        #login, #todo {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        input[type="text"], input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .task {
+            background: #e2e2e2;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="login">
+    <h2>Вход 
+        id 1234567890
+        password 123
+
+    </h2>
+    <input type="text" id="userId" placeholder="ID" />
+    <input type="password" id="password" placeholder="Пароль" />
+    <button onclick="login()">Войти</button>
+</div>
+
+<div id="todo">
+    <h2>To Do List</h2>
+    <input type="text" id="taskInput" placeholder="Новая задача" />
+    <button onclick="addTask()">Добавить</button>
+    <ul id="taskList"></ul>
+    <button onclick="logout()">Выйти</button>
+</div>
+
+<script>
+    const validUserId = '1234567890 '; // Задай ID пользователя
+    const validPassword = '123'; // Задай пароль
+
+    function showLogin() {
+        document.getElementById('login').style.display = 'block';
+        document.getElementById('todo').style.display = 'none';
+    }
+
+    function showTodo() {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('todo').style.display = 'block';
+        loadTasks();
+    }
+
+    function login() {
+        const userId = document.getElementById('userId').value;
+        const password = document.getElementById('password').value;
+
+        if (userId === validUserId && password === validPassword) {
+            showTodo();
+        } else {
+            alert('Неверный ID или пароль');
+        }
+    }
+
+    function logout() {
+        showLogin();
+        document.getElementById('taskList').innerHTML = '';
+    }
+
+    function addTask() {
+        const taskInput = document.getElementById('taskInput');
+        const taskText = taskInput.value.trim();
+        
+        if (taskText) {
+            const taskList = document.getElementById('taskList');
+            const li = document.createElement('li');
+            li.textContent = taskText;
+            li.classList.add('task');
+            taskList.appendChild(li);
+            taskInput.value = '';
+            saveTasks();
+        }
+    }
+
+    function loadTasks() {
+        // Загрузка задач из Local Storage
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.textContent = task;
+            li.classList.add('task');
+            taskList.appendChild(li);
+        });
+    }
+
+    function saveTasks() {
+        const taskList = document.getElementById('taskList');
+        const tasks = Array.from(taskList.children).map(task => task.textContent);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Показать экран входа при загрузке
+    window.onload = showLogin;
+</script>
+
+</body>
+</html>
